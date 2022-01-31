@@ -10,5 +10,5 @@ all:
 
 clean:
 	@echo "Cleaning"
-	rm -r build
+	rm ale.so
 

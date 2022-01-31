@@ -5,3 +5,27 @@ hello_world <- function() {
     .Call(`_ale_hello_world`)
 }
 
+new_ale <- function() {
+    .Call(`_ale_new_ale`)
+}
+
+ale_set_bool <- function(self, name, value) {
+    invisible(.Call(`_ale_ale_set_bool`, self, name, value))
+}
+
+ale_set_float <- function(self, name, value) {
+    invisible(.Call(`_ale_ale_set_float`, self, name, value))
+}
+
+ale_set_int <- function(self, name, value) {
+    invisible(.Call(`_ale_ale_set_int`, self, name, value))
+}
+
+ale_load_rom <- function(self, rom) {
+    invisible(.Call(`_ale_ale_load_rom`, self, rom))
+}
+
+ale_reset_game <- function(self) {
+    invisible(.Call(`_ale_ale_reset_game`, self))
+}
+

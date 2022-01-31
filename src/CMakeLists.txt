@@ -6,6 +6,7 @@ FetchContent_Declare(
   ALE
   GIT_REPOSITORY "https://github.com/mgbellemare/Arcade-Learning-Environment"
   GIT_TAG "v0.7.3"
+  CMAKE_ARGS -DSDL_SUPPORT=ON
 )
 
 FetchContent_Declare(
@@ -14,9 +15,18 @@ FetchContent_Declare(
   GIT_TAG "v1.2.11"
 )
 
-set(BUILD_PYTHON_LIB OFF)
+FetchContent_Declare(
+  SDL
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL
+  GIT_TAG release-2.0.20
+)
 
-FetchContent_MakeAvailable(ALE ZLib)
+set(BUILD_PYTHON_LIB OFF)
+set(SDL_SUPPORT OFF)
+
+FetchContent_MakeAvailable(ZLib SDL)
+FetchContent_MakeAvailable(ALE)
+
 find_package(ale REQUIRED)
 
 execute_process (
@@ -41,6 +51,6 @@ include_directories(${R_HOME_DIR}/include)
 include_directories(${RCPP_HOME_DIR}/include)
 
 add_library(aler SHARED code.cpp RcppExports.cpp)
-target_link_libraries(aler ale::ale-lib Rcpp RLib)
+target_link_libraries(aler ale::ale-lib Rcpp RLib SDL2::SDL2)
 set_property(TARGET aler PROPERTY CXX_STANDARD 17)
 
