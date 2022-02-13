@@ -29,3 +29,15 @@ ale_reset_game <- function(self) {
     invisible(.Call(`_ale_ale_reset_game`, self))
 }
 
+ale_random_action <- function(self) {
+    .Call(`_ale_ale_random_action`, self)
+}
+
+ale_get_screen_rgb <- function(self) {
+    .Call(`_ale_ale_get_screen_rgb`, self)
+}
+
+ale_get_screen_grayscale <- function(self) {
+    .Call(`_ale_ale_get_screen_grayscale`, self)
+}
+

@@ -88,6 +88,39 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// ale_random_action
+float ale_random_action(ale_ptr self);
+RcppExport SEXP _ale_ale_random_action(SEXP selfSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< ale_ptr >::type self(selfSEXP);
+    rcpp_result_gen = Rcpp::wrap(ale_random_action(self));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ale_get_screen_rgb
+std::vector<std::uint8_t> ale_get_screen_rgb(ale_ptr self);
+RcppExport SEXP _ale_ale_get_screen_rgb(SEXP selfSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< ale_ptr >::type self(selfSEXP);
+    rcpp_result_gen = Rcpp::wrap(ale_get_screen_rgb(self));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ale_get_screen_grayscale
+std::vector<std::uint8_t> ale_get_screen_grayscale(ale_ptr self);
+RcppExport SEXP _ale_ale_get_screen_grayscale(SEXP selfSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< ale_ptr >::type self(selfSEXP);
+    rcpp_result_gen = Rcpp::wrap(ale_get_screen_grayscale(self));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ale_hello_world", (DL_FUNC) &_ale_hello_world, 0},
@@ -97,6 +130,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ale_ale_set_int", (DL_FUNC) &_ale_ale_set_int, 3},
     {"_ale_ale_load_rom", (DL_FUNC) &_ale_ale_load_rom, 2},
     {"_ale_ale_reset_game", (DL_FUNC) &_ale_ale_reset_game, 1},
+    {"_ale_ale_random_action", (DL_FUNC) &_ale_ale_random_action, 1},
+    {"_ale_ale_get_screen_rgb", (DL_FUNC) &_ale_ale_get_screen_rgb, 1},
+    {"_ale_ale_get_screen_grayscale", (DL_FUNC) &_ale_ale_get_screen_grayscale, 1},
     {NULL, NULL, 0}
 };
 

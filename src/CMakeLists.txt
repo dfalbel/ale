@@ -2,32 +2,57 @@ cmake_minimum_required(VERSION 3.14)
 
 project(ale)
 include(FetchContent)
-FetchContent_Declare(
-  ALE
+include(ExternalProject)
+
+set(LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/library/)
+
+SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${LIBRARY_DIR}/lib")
+SET(COMMON_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${LIBRARY_DIR} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH})
+
+ExternalProject_Add(zlib
+    GIT_REPOSITORY https://github.com/madler/zlib.git
+    GIT_TAG v1.2.11
+    PREFIX "${CMAKE_CURRENT_BINARY_DIR}/zlib"
+    CMAKE_ARGS ${COMMON_CMAKE_ARGS} -DHAVE_UNISTD_H=off
+)
+ExternalProject_Add(SDL
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL
+  GIT_TAG release-2.0.18
+  PREFIX "${CMAKE_CURRENT_BINARY_DIR}/sdl"
+  CMAKE_ARGS ${COMMON_CMAKE_ARGS}
+)
+
+ExternalProject_Add(ALE
   GIT_REPOSITORY "https://github.com/mgbellemare/Arcade-Learning-Environment"
   GIT_TAG "v0.7.3"
-  CMAKE_ARGS -DSDL_SUPPORT=ON
+  PREFIX "${CMAKE_CURRENT_BINARY_DIR}/ALE"
+  CMAKE_ARGS ${COMMON_CMAKE_ARGS} -DSDL_SUPPORT=ON -DBUILD_PYTHON_LIB=OFF -DCMAKE_CXX_FLAGS="-D__USE_SDL"
 )
 
-FetchContent_Declare(
-  ZLib
-  GIT_REPOSITORY "https://github.com/madler/zlib"
-  GIT_TAG "v1.2.11"
-)
+add_dependencies(ALE zlib SDL)
 
-FetchContent_Declare(
-  SDL
-  GIT_REPOSITORY https://github.com/libsdl-org/SDL
-  GIT_TAG release-2.0.20
-)
 
-set(BUILD_PYTHON_LIB OFF)
-set(SDL_SUPPORT OFF)
+#set(SDL_SUPPORT ON)
+#set(SDL_DYNLOAD ON)
+#set(BUILD_PYTHON_LIB OFF)
+#FetchContent_Declare(
+#  ALE
+#  GIT_REPOSITORY "https://github.com/mgbellemare/Arcade-Learning-Environment"
+#  GIT_TAG "v0.7.3"
+#)
+#FetchContent_MakeAvailable(ALE)
 
-FetchContent_MakeAvailable(ZLib SDL)
-FetchContent_MakeAvailable(ALE)
+add_library(libzlib SHARED IMPORTED)
+add_library(libzlib::library ALIAS libzlib)
+set_target_properties(libzlib PROPERTIES IMPORTED_LOCATION ${LIBRARY_DIR}/lib/libz.dylib)
 
-find_package(ale REQUIRED)
+add_library(libale SHARED IMPORTED)
+add_library(libale::library ALIAS libale)
+set_target_properties(libale PROPERTIES IMPORTED_LOCATION ${LIBRARY_DIR}/lib/libale.a)
+
+add_library(libsdl SHARED IMPORTED)
+add_library(libsdl::library ALIAS libsdl)
+set_target_properties(libsdl PROPERTIES IMPORTED_LOCATION ${LIBRARY_DIR}/lib/libSDL2.dylib)
 
 execute_process (
     COMMAND Rscript -e "cat(R.home())"
@@ -49,8 +74,11 @@ set_target_properties(RLib PROPERTIES IMPORTED_LOCATION ${R_HOME_DIR}/lib/libR.d
 
 include_directories(${R_HOME_DIR}/include)
 include_directories(${RCPP_HOME_DIR}/include)
+include_directories(${LIBRARY_DIR}/include/ale)
+include_directories(${LIBRARY_DIR}/include/SDL2)
 
 add_library(aler SHARED code.cpp RcppExports.cpp)
-target_link_libraries(aler ale::ale-lib Rcpp RLib SDL2::SDL2)
+target_link_libraries(aler libale Rcpp RLib libzlib libsdl)
+ADD_DEFINITIONS(-D__USE_SDL)
 set_property(TARGET aler PROPERTY CXX_STANDARD 17)
-
+add_dependencies(aler ALE)

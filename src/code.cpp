@@ -40,3 +40,26 @@ void ale_load_rom(ale_ptr self, std::string rom) {
 void ale_reset_game (ale_ptr self) {
   self->reset_game();
 }
+
+// [[Rcpp::export]]
+float ale_random_action (ale_ptr self) {
+  ale::ActionVect legal_actions = self->getLegalActionSet();
+  ale::Action a = legal_actions[rand() % legal_actions.size()];
+  // Apply the action and get the resulting reward
+  float reward = self->act(a);
+  return reward;
+}
+
+// [[Rcpp::export]]
+std::vector<std::uint8_t> ale_get_screen_rgb (ale_ptr self) {
+  std::vector<std::uint8_t> buffer;
+  self->getScreenRGB(buffer);
+  return buffer;
+}
+
+// [[Rcpp::export]]
+std::vector<std::uint8_t> ale_get_screen_grayscale (ale_ptr self) {
+  std::vector<std::uint8_t> buffer;
+  self->getScreenGrayscale(buffer);
+  return buffer;
+}
