@@ -1,5 +1,5 @@
-ale <- R6::R6Class(
-  "ale",
+ale_interface <- R6::R6Class(
+  "ale_interface",
   public = list(
     initialize = function() {
       private$ptr = new_ale()
